@@ -1,3 +1,9 @@
+/*
+Nizu Core JS Library
+v 1.2.1
+Author RGW IT SERVICES
+Web: nizu.be
+*/
 // File Upload Functions
 function nizu_secondsToTime(secs) { // we will use this function to convert seconds in normal time format
     var hr = Math.floor(secs / 3600);

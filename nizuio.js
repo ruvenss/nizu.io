@@ -79,50 +79,66 @@ function nizu_getRandomColor() {
     }
     return color;
 }
+function nizu_executeFunctionByName(functionName, context /*, args */) {
+    if (functionName.length>0 && functionName!="null") {
+        console.log("executing function:"+functionName);
+        var args = [].slice.call(arguments).splice(2);
+        var namespaces = functionName.split(".");
+        var func = namespaces.pop();
+        for(var i = 0; i < namespaces.length; i++) {
+            context = context[namespaces[i]];
+        }
+        return context[func].apply(context, args);
+    }
+}
+function nizu_loaderON(message){
+	if (message) {
+		nizu_loader(message,true);	
+	}
+}
+function nizu_loaderOFF() {
+	nizu_loader("",false);
+}
 function nizu_GetData(options,loadingmessage,callback) {
 	if (options) {
-        /* Testing developer syntax */
-        if (loadingmessage) {
-            /* Activating loading animation while the transaction is close */
-            $.blockUI(); 
-        }
-        if (serverurl.length>0) {
-            if (loadingmessage>0) {
-                $("#domMessage").focus();
-            }
-            $.post(serverurl, options, function(result,status){
-                if (status=="success") {
-                    if (loadingmessage>0) {
-                        $.unblockUI(); 
-                    }
-                    if (result.length>0) {
-                        var ans=JSON.parse(result);
-                        if (typeof ans.errcode !== 'undefined') {
-                            if (ans.errcode>0) {
-                                //$("#alertmsg").text(ans.errmsg);
-                                let myNotification = new Notification('Error', {
-                                    body: ans.errmsg
-                                });
-                                //$.unblockUI(); 
-                                if(callback) { callback(ans);} else {
-                                    console.log("getData Error callback");
-                                    return ans;
-                                }
-                            }
-                        } else {
-                            if(callback) {callback(ans);}
-                        }
-                    } else {
-                        var ans=[0];
-                        callback(ans);
-                    }
-                } else {
-                    /* Something went wrong */
-                    $.unblockUI(); 
-                    console.log("getData transaction error");
-                }
-            });
-        }
+		if (loadingmessage) {
+		    /* Activating loading animation while the transaction is close */
+		    nizu_loaderON(loadingmessage);
+		}
+		if (serverurl.length>0) {
+		    $.post(serverurl, options, function(result,status){
+			if (status=="success") {
+			    if (loadingmessage>0) {
+				 nizu_loaderOFF();
+			    }
+			    if (result.length>0) {
+				var ans=JSON.parse(result);
+				if (typeof ans.errcode !== 'undefined') {
+				    if (ans.errcode>0) {
+					//$("#alertmsg").text(ans.errmsg);
+					let myNotification = new Notification('Error', {
+					    body: ans.errmsg
+					});
+					//$.unblockUI(); 
+					if(callback) { callback(ans);} else {
+					    console.log("nizu_GetData Error callback");
+					    return ans;
+					}
+				    }
+				} else {
+				    if(callback) {callback(ans);}
+				}
+			    } else {
+				var ans=[0];
+				callback(ans);
+			    }
+			} else {
+			    /* Something went wrong */
+			    nizu_loaderOFF();
+			    console.log("getData transaction error");
+			}
+		    });
+		}
 	} else {
 		console.log("options incorrect");
 	}

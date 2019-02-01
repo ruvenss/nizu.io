@@ -105,8 +105,8 @@ function nizu_GetData(options,loadingmessage,callback) {
 		    /* Activating loading animation while the transaction is close */
 		    nizu_loaderON(loadingmessage);
 		}
-		if (serverurl.length>0) {
-		    $.post(serverurl, options, function(result,status){
+		if (nizu_serverurl.length>0) {
+		    $.post(nizu_serverurl, options, function(result,status){
 			if (status=="success") {
 			    if (loadingmessage>0) {
 				 nizu_loaderOFF();

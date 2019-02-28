@@ -115,20 +115,19 @@ function nizu_GetData(options,loadingmessage,callback) {
 				var ans=JSON.parse(result);
 				if (typeof ans.errcode !== 'undefined') {
 				    if (ans.errcode>0) {
-					//$("#alertmsg").text(ans.errmsg);
-					let myNotification = new Notification('Error', {
-					    body: ans.errmsg
-					});
-					//$.unblockUI(); 
+					console.log("nizu error code: "+ans.errcode+" nizu error message: "+ans.errmsg);
+					nizu_loaderOFF();
 					if(callback) { callback(ans);} else {
-					    console.log("nizu_GetData Error callback");
-					    return ans;
+						nizu_loaderOFF();
+					    	console.log("nizu_GetData Error callback");
+					    	return ans;
 					}
 				    }
 				} else {
-				    if(callback) {callback(ans);}
+				    if(callback) {nizu_loaderOFF();callback(ans);}
 				}
 			    } else {
+				nizu_loaderOFF();
 				var ans=[0];
 				callback(ans);
 			    }
